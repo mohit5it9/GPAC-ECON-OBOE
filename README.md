@@ -15,7 +15,7 @@ How to run Client?
 
 GPAC Dash Player is used as client. https://github.com/gpac/gpac
 
-To run: MP4Client http://<serverip>:<port>/<video_file>.mpd
+To run: MP4Client http:// <serverip> : <port> /<video_file>.mpd
   
 
 To run OBOE with ECON make sure that the variables are set to True in the init section of server.py
