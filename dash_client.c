@@ -3318,6 +3318,7 @@ static s32 dash_do_rate_adaptation_bola(GF_DashClient *dash, GF_DASH_Group *grou
     return new_index;
 }
 
+//--------------MPC Helper function----------------------
 static u32 find_max_reward(GF_DASH_Group *group, u32 max_quality, u32 n, u32 i, u32 arr[], Double bandwidth, u32 *new_index, Double max_reward) {
 
     if (i==n) {
@@ -3348,7 +3349,6 @@ static u32 find_max_reward(GF_DASH_Group *group, u32 max_quality, u32 n, u32 i, 
 
 
             Double first_bandwidth = (Double)((GF_MPD_Representation *)gf_list_get(group->adaptation_set->representations, 0))->bandwidth;
-            // printf("\nLine 3154 %f %f",first_bandwidth, last_chunk_bandwidth, chunk_bandwidth );
             Double log_bit_rate = log(chunk_bandwidth / first_bandwidth);
             Double log_last_bit_rate = log(last_chunk_bandwidth / first_bandwidth);
             bitrate_sum += log_bit_rate;
@@ -3358,7 +3358,6 @@ static u32 find_max_reward(GF_DASH_Group *group, u32 max_quality, u32 n, u32 i, 
         }
 
         Double reward = (bitrate_sum/1000.0) - (4.3*cur_rebuffer_time) - (smoothness_diffs/1000.0);
-        // Double reward = (bitrate_sum) - (4.3*cur_rebuffer_time) - (smoothness_diffs);
         if ( reward > max_reward ) {
             *new_index = arr[0];
             return reward;
@@ -3374,86 +3373,74 @@ static u32 find_max_reward(GF_DASH_Group *group, u32 max_quality, u32 n, u32 i, 
     return max_reward;
 }
 
+//-----------------ECON-------------------------
 static s32 dash_do_rate_adaptation_econ(GF_DashClient *dash, GF_DASH_Group *group, GF_DASH_Group *base_group,
                                           u32 dl_rate, Double speed, Double max_available_speed, Bool force_lower_complexity,
                                               GF_MPD_Representation *rep, Bool go_up_bitrate)
 {
-    return 0; // For our architecture #2 design
-    // If you want to user architecture #1, uncomment the above line
-    int sock = 0, valread;
-    struct sockaddr_in serv_addr;
-    char buffer[1024] = {0};
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Socket creation error \n");
-        return -1;
-    }
+    // Architecture #2
+    return 0;
+    
+    
+    // If you want to use architecture #1, uncomment the below lines
+//     int sock = 0, valread;
+//     struct sockaddr_in serv_addr;
+//     char buffer[1024] = {0};
+//     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+//     {
+//         printf("\n Socket creation error \n");
+//         return -1;
+//     }
 
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(80);
+//     serv_addr.sin_family = AF_INET;
+//     serv_addr.sin_port = htons(80);
 
-    // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "130.245.145.208", &serv_addr.sin_addr)<=0)
-    {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
+//     // Convert IPv4 and IPv6 addresses from text to binary form
+//     if(inet_pton(AF_INET, "130.245.145.208", &serv_addr.sin_addr)<=0)
+//     {
+//         printf("\nInvalid address/ Address not supported \n");
+//         return -1;
+//     }
 
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-    char *message = "GET /admin HTTP/1.1\r\n\r\n";
-    write(sock, message, strlen(message));
-    Double correct_throughtput;
+//     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+//     {
+//         printf("\nConnection Failed \n");
+//         return -1;
+//     }
+//     char *message = "GET /admin HTTP/1.1\r\n\r\n";
+//     write(sock, message, strlen(message));
+//     Double correct_throughtput;
 
-    valread = recv( sock , buffer, 1024, 0);
-    int cnt = 0;
-    char *target_pos = NULL;
-    target_pos = strrchr(buffer, '\n');
-    while (cnt < 1) {
-        while (buffer < target_pos && *target_pos != '\n')
-                --target_pos;
-        if (*target_pos ==  '\n')
-         --target_pos, ++cnt;
-    }
-    if (buffer < target_pos)
-        target_pos += 2;
-
-    u32 i = 0;
-    printf(" Response recieved is %s\n", target_pos);
-    int buffer_ = atoi(target_pos)/8;
-
-    if (buffer_ == -1) {
-        return 0;
-    }
-     while (i < gf_list_count(group->adaptation_set->representations)) {
-        if ((Double)buffer_ < (Double)((GF_MPD_Representation *)gf_list_get(group->adaptation_set->representations, i))->bandwidth)
-            break;
-        i += 1;
-    }
-    if (i==5)
-        i--;
-    printf("Requesting %d\n",i);
-    close(sock);
-
-    FILE *fp1;
-    fp1 = fopen("rep_econ.txt", "a");
-    fprintf(fp1, "%d\n", i);
-    fclose(fp1);
-    fp1 = fopen("bitrate_econ.txt", "a");
-    fprintf(fp1, "%f\n", (Double)((GF_MPD_Representation *)gf_list_get(group->adaptation_set->representations, i))->bandwidth);
-    fclose(fp1);
-    fp1 = fopen("buf_econ.txt", "a");
-    fprintf(fp1, "%d\n", group->buffer_occupancy_ms);
-    fclose(fp1);
-    return i;
-
+//     valread = recv( sock , buffer, 1024, 0);
+//     int cnt = 0;
+//     char *target_pos = NULL;
+//     target_pos = strrchr(buffer, '\n');
+//     while (cnt < 1) {
+//         while (buffer < target_pos && *target_pos != '\n')
+//                 --target_pos;
+//         if (*target_pos ==  '\n')
+//          --target_pos, ++cnt;
+//     }
+//     if (buffer < target_pos)
+//         target_pos += 2;
+//     u32 i = 0;
+//     int buffer_ = atoi(target_pos)/8;
+//     if (buffer_ == -1) {
+//         return 0;
+//     }
+//      while (i < gf_list_count(group->adaptation_set->representations)) {
+//         if ((Double)buffer_ < (Double)((GF_MPD_Representation *)gf_list_get(group->adaptation_set->representations, i))->bandwidth)
+//             break;
+//         i += 1;
+//     }
+//     if (i==5)
+//         i--;
+//     printf("Requesting %d\n",i);
+//     return i;
 }
 
 
-// implementation of MPC algorithm
+//---------------------MPC------------------------------------
 static s32 dash_do_rate_adaptation_mpc(GF_DashClient *dash, GF_DASH_Group *group, GF_DASH_Group *base_group,
                                           u32 dl_rate, Double speed, Double max_available_speed, Bool force_lower_complexity,
                                               GF_MPD_Representation *rep, Bool go_up_bitrate)
@@ -3467,9 +3454,6 @@ static s32 dash_do_rate_adaptation_mpc(GF_DashClient *dash, GF_DASH_Group *group
         gf_list_rem(group->past_bandwidth, 0);
     }
     u32 count = gf_list_count(group->past_bandwidth);
-    for (int i=0; i<count; i++) {
-        printf ("%f ", *((Double *)gf_list_get(group->past_bandwidth,i)));
-    }
 
     Double bandwidth_sum = 0.0;
 
@@ -3500,17 +3484,6 @@ static s32 dash_do_rate_adaptation_mpc(GF_DashClient *dash, GF_DASH_Group *group
     if (new_index < 0 || new_index > 5) {
         new_index = 0;
     }
-
-    FILE *fp1;
-    fp1 = fopen("rep_mpc.txt", "a");
-    fprintf(fp1, "%d\n", new_index);
-    fclose(fp1);
-    fp1 = fopen("bitrate_mpc.txt", "a");
-    fprintf(fp1, "%f\n", (Double)((GF_MPD_Representation *)gf_list_get(group->adaptation_set->representations, new_index))->bandwidth);
-    fclose(fp1);
-    fp1 = fopen("buf_mpc.txt", "a");
-    fprintf(fp1, "%d\n", group->buffer_occupancy_ms);
-    fclose(fp1);
     return new_index;
 }
 
@@ -7270,7 +7243,7 @@ void gf_dash_set_algo(GF_DashClient *dash, GF_DASHAdaptationAlgorithm algo)
         dash->rate_adaptation_download_monitor = dash_do_rate_monitor_default;
         break;
     case GF_DASH_ALGO_BBA0:
-        dash->rate_adaptation_algo = dash_do_rate_adaptation_econ;
+        dash->rate_adaptation_algo = dash_do_rate_adaptation_econ; //replace this algorithm with the required one and make sure bba is called from mpd_in.c in gpac
         dash->rate_adaptation_download_monitor = dash_do_rate_monitor_default;
         break;
     case GF_DASH_ALGO_BOLA_FINITE:
