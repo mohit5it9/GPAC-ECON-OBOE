@@ -157,7 +157,7 @@ def getDynamicconfig_econ(pv_list_hyb, bw, std, step):
         return 0.0, 0.0, 0.0, 0.0
     return min(current_list_hyb), np.percentile(current_list_hyb,50), max(current_list_hyb), np.mean(current_list_hyb)
 
-if __name__ == '__main__': # not needed with the python server code. Can remove it
+if __name__ == '__main__': # not needed with the python server code. Required for node server
     scwnd = float(sys.argv[1])
     rounds = int(sys.argv[2])
     cwnd = [int(x) for x in sys.argv[3].split(",")]
