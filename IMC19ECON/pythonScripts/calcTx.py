@@ -4,7 +4,7 @@ import math
 import sys
 # follow instructions from OBOE github on how to install bayessian change point detection library
 import bayesian_changepoint_detection.online_changepoint_detection as oncd
-from config_econ_oboe import *
+from configmap_econ_oboe import *
 from functools import partial
 
 CD_INTERVAL = 5
