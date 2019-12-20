@@ -11,7 +11,7 @@ import SocketServer
 from econ_helper import *
 from video_data import *
 
-OBOE = False # Chanhe this to True if we need to run OBOE+ECON
+OBOE = True # Chanhe this to True if we need to run OBOE+ECON
 ECON = True # Change this to False if you're running BOLA, BBA. But do not change this value for now
 
 

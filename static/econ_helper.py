@@ -54,6 +54,7 @@ def get_econ_bitrate(OBOE):
     # if running OBOE+ECON
     if OBOE == True:
         # calculate throughput from ECON Paper
+        global chunk_when_last_chd, alpha
         econTx, alpha, chunk_when_last_chd = tx.calcTxCubic(scwnd, rounds, cwnd_arr, rtt, chunk_when_last_chd, alpha, True)
         bitrate = getCorrespondingBitrate(econTx*1500*2)
         return bitrate
@@ -66,6 +67,7 @@ def get_econ_bitrate(OBOE):
             bitrate = getCorrespondingBitrate(econTx)
             return bitrate
 
+        global chunk_when_last_chd, alpha
         econTx, alpha, chunk_when_last_chd = tx.calcTxCubic(scwnd, rounds, pcwnd, rtt, 0, 0, False)
         print ("econTx is", econTx*1500*0.25)
         bitrate = getCorrespondingBitrate(econTx*1500*2)
@@ -79,7 +81,7 @@ def getCorrespondingBitrate(tx):
     for quality in sorted(quality_to_bitrate.keys(), reverse=True):
         size = quality_to_bitrate[quality]
         if tx >= size:
-            bitrate = str[quality]
+            bitrate = str(quality)
             break
     return bitrate
 
