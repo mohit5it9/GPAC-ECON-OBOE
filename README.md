@@ -38,6 +38,13 @@ To run OBOE with ECON make sure that the variables are set to True in the init s
 
 Create dash aligned representations of a video for different bitrates using ffmpeg and MP4Box.
 
+Following are sample commands that can be used to segment a video into different representation such that it is dash aligned:
+
+	$> ffmpeg -y -i inputfile -ac 2 -ab 128k -c:v libx264 -x264opts 'keyint=24:min-keyint=24:no-scenecut' -b:v 800k maxrate 800k bufsize 500k -vf "scale=-1:540" outputfile540
+	$> MP4Box -dash 2000 -rap -frag-rap -profile Live -out output.mpd outputfile180.mp4 outputfile360.mp4 outputfile540.mp4 outputfile7200.mp4 outputfile1080.mp4
+	
+
+
 Sample DASH Video file can be downloaded at https://drive.google.com/file/d/14qwl9kGKYADPXL5vZJWoXFNRIBuFCZtR/view?usp=sharing
 
 # References
