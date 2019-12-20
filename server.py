@@ -24,10 +24,9 @@ class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             print ("econ_bitrate is", econ_bitrate)
             self.path = "/output" + econ_bitrate + "_dash" + customUrl[1]
 
-            # Writing to file to determine number of switches, representation
-            global quality_to_bitrate, quality_to_rep
+            # Logging to file to determine number of switches, representation
             f = open("bitrate_econ.txt", "a")
-            f.write(str(quality_to_bitrate[econ_bitrate])+"\n")
+            f.write(str(quality_to_bitrate[int(econ_bitrate)])+"\n")
             f.close()
             f = open("rep_econ.txt", "a")
             f.write(str(quality_to_rep[econ_bitrate])+"\n")

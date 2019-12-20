@@ -79,7 +79,7 @@ def getCorrespondingBitrate(tx):
     for quality in sorted(quality_to_bitrate.keys(), reverse=True):
         size = quality_to_bitrate[quality]
         if tx >= size:
-            bitrate = str(quality)
+            bitrate = str[quality]
             break
     return bitrate
 
