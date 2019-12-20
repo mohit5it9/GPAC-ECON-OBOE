@@ -44,8 +44,7 @@ Following are sample commands that can be used to segment a video into different
 	$> MP4Box -dash 2000 -rap -frag-rap -profile Live -out output.mpd outputfile180.mp4 outputfile360.mp4 outputfile540.mp4 outputfile7200.mp4 outputfile1080.mp4
 	
 
-
-Sample DASH Video file can be downloaded at https://drive.google.com/file/d/14qwl9kGKYADPXL5vZJWoXFNRIBuFCZtR/view?usp=sharing
+Sample DASH Video file can be downloaded at https://drive.google.com/file/d/14qwl9kGKYADPXL5vZJWoXFNRIBuFCZtR/view?usp=sharing. This video file must be stored in static/ directory.
 
 # References
 
