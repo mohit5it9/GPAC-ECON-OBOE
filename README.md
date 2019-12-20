@@ -7,7 +7,8 @@
 
 # Setup
 How to setup Bayesian change point detection?
-he code for this detector is on
+
+The code for this detector is on
 github (https://github.com/hildensia/bayesian_changepoint_detection). We are including
 here as well. To install the package do the following steps:
 
