@@ -47,6 +47,10 @@ Following are sample commands that can be used to segment a video into different
 
 Sample DASH Video file can be downloaded at https://drive.google.com/file/d/14qwl9kGKYADPXL5vZJWoXFNRIBuFCZtR/view?usp=sharing. This video file must be stored in static/ directory.
 
+# Config map generation in offline mode
+
+You can create a config map by running the ECON algorith for various congestion window traces (also synthetic traces too). One such sample config map file is present in *static/IMC19ECON/pythonScripts/configmap_econ_oboe.py*
+
 # References
 
 [1] Yi Cao, Javad Nejati, Aruna Balasubramanian, Anshul Gandhi. ECON: Modeling the network to improve application performance. IMC ’19, October 21–23, 2019, Amsterdam, Netherlands.
